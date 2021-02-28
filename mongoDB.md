@@ -89,6 +89,207 @@ graphdb 는 컬럼이나 document가 필요 없을 때, 그러나 각 노드 사
 
 
 
+## 📚 6. MongoDB 와 SQL 문법 비교 
+### 1. INSERT 
+- MongoDB
+```mongodb
+
+db.people.insertOne(
+                    { user_id: "LAST999"
+                    , age: 99
+                    , status: "A"}
+                    )
+
+          
+db.people.insertMany([
+{ user_id: "new111", age: 1, status: "A"},
+{ user_id: "new222", age: 2, status: "B"},
+{ user_id: "new333", age: 3, status: "C"},
+                    ])  
 
 
+// mongodb의 특징 비정형 데이터 컬럼명에 제약되지 않고 데이터를 넣을 수 있다.
+db.people.insertMany([
+{ user_id: "sa",    age :  12, status : "K"},
+{ ah2d   : "seung", ehEz:  25, grade  : "L", add   : "daejeon"  },
+{ user   : "won",   na2 : 100, rating : "Z", score :  80        },
+                    ])  
+                  
+```
+- SQL
 
+```sql
+INSERT people (user_id
+             , age
+             , status) 
+VALUES ("ssw001"
+         , 26
+         , "A");
+```
+
+
+### 2. SELECT
+#### (1) 전체 조회
+```mongoDB
+db.people.find()
+```
+```sql
+SELECT *
+FROM people
+```
+#### (2) 원하는 컬럼만 조회
+```mongodb
+db.people.find(
+     { },
+     {user_id : 1
+    , status  : 1})
+```
+
+```sql
+SELECT user_id
+     , status
+FROM people
+```
+ 
+#### (3) MongoDB에서 _id값 제외하고 조회
+```mongodb
+db.people.find(
+     { },
+     {user_id: 1
+    , status : 1
+    , _id    : 0})
+ ```
+#### (4) 조건 조회
+ ```mongodb
+db.people.find(
+     { status: "A" })
+```
+```sql
+SELECT *
+FROM people
+WHERE status = "A"
+```
+#### (5) 조건 + 컬럼 지정 조회 
+```mongodb
+db.people.find(
+     { status: "B" },
+     { user_id: 1
+     , status : 1
+     , _id    : 0})
+ 
+```
+
+```sql
+SELECT user_id
+     , status
+FROM people
+WHERE status = "B"  
+```
+#### (6) 해당 조건 제외한 데이터 조회 
+```mongodb
+db.people.find(
+    { status: { $ne: "A"}})
+```
+```sql
+SELECT *
+FROM people
+WHERE status !=  "A"
+```
+
+#### (7) 여러 조건 검색 
+
+```mongodb
+db.people.find(
+    { status: "A",
+      age   :  50})
+```
+```sql
+SELECT *
+FROM people
+WHERE status = "A"
+AND age = 50 
+```
+
+#### (8) OR 조건 검색
+```mongodb
+db.people.find(
+    { $or: 
+        [ {status: "B"}
+        , {age: 50} ] })      
+```
+```sql
+SELECT *
+FROM  people
+WHERE status = "B"
+OR    age    = 50 
+```
+
+#### (9) 미만 
+```mongodb
+db.people.find(
+    { age: { $lt: 25 } })
+```
+```sql
+SELECT *
+FROM people
+WHERE age < 25
+```
+
+#### (10) 초과
+```mongodb
+db.people.find(
+    { age: { $gt: 25 } })
+```
+```sql
+SELECT *
+FROM people
+WHERE age > 25
+
+```
+#### (11) 초과 ~ 이하
+```mongodb
+db.people.find(
+    { age: { $gt : 30
+           , $lte: 50}})
+```
+
+```sql
+SELECT *
+FROM  people
+WHERE age >  30
+AND   age <= 50
+```
+
+#### (12) like %
+```mongodb
+db.people.find({user_id: /ss/})
+```
+```sql
+SELECT *
+FROM  people
+WHERE user_id like "%ss%" 
+```
+#### (13) Count
+```mongodb
+db.people.count( { age: { $gt: 30 } } ) 
+```
+```sql
+SELECT COUNT(*)
+FROM people
+```
+#### (14) 정렬
+```mongodb
+db.people.find(
+    { age: { $lte: 45}})
+      .sort({age : +1})
+```
+
+```sql
+SELECT   *
+FROM     people
+WHERE    age <= 45
+ORDER BY age ASC
+```
+
+
+                   
